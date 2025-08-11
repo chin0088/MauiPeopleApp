@@ -15,13 +15,18 @@ public class PersonListViewModel : BaseViewModel
 
     public ICommand LoadPeopleCommand { get; }
 
+    public PersonListViewModel(PersonService personService)
+    {
+        _personService = personService;
+        LoadPeopleCommand = new Command(async () => await LoadPeopleAsync());
+    }
+
     public PersonListViewModel()
     {
         _personService = new PersonService();
-        LoadPeopleCommand = new Command(async () => await LoadPeople());
+        LoadPeopleCommand = new Command(async () => await LoadPeopleAsync());
     }
-
-    private async Task LoadPeople()
+    public async Task LoadPeopleAsync()
     {
         if (IsBusy) return;
         IsBusy = true;
@@ -31,7 +36,10 @@ public class PersonListViewModel : BaseViewModel
             People.Clear();
             var people = await _personService.GetPeopleAsync();
             foreach (var person in people)
-                People.Add(person);
+            {
+                People.Add(person); 
+            }
+                
         }
         catch (Exception ex)
         {
@@ -42,4 +50,6 @@ public class PersonListViewModel : BaseViewModel
             IsBusy = false;
         }
     }
+    
+    private async Task LoadPeople() => await LoadPeopleAsync();
 }

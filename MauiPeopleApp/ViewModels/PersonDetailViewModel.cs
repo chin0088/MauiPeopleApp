@@ -2,10 +2,17 @@ using MauiPeopleApp.Models;
 
 namespace MauiPeopleApp.ViewModels;
 
-public class PersonDetailViewModel
+public class PersonDetailViewModel : BaseViewModel
 {
-    public Person Person { get; }
+    private Person? _person;
 
+    public Person? Person
+    {
+        get => _person;
+        set => SetProperty(ref _person, value);
+    }
+
+    public PersonDetailViewModel() { }
     public PersonDetailViewModel(Person person)
     {
         Person = person;

@@ -13,11 +13,26 @@ public partial class PersonListPage : ContentPage
         BindingContext = new PersonListViewModel();
     }
 
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
-        if (ViewModel.People.Count == 0)
-            ViewModel.LoadPeopleCommand.Execute(null);
+        if (ViewModel != null && ViewModel.People.Count == 0)
+        {
+            await ViewModel.LoadPeopleAsync();
+        }
+    }
+    
+    private async void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (e.CurrentSelection?.FirstOrDefault() is Person selectedPerson)
+        {
+            await Shell.Current.GoToAsync($"PersonDetailPage", new Dictionary<string, object>
+            {
+                ["Person"] = selectedPerson
+            });
+            
+            ((CollectionView)sender).SelectedItem = null;
+        }
     }
 
 
